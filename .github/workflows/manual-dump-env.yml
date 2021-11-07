@@ -1,24 +1,32 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
-name: Push Workflow
+name: Manual Workflow
 
-# global environment variables to all jobs
+# Global environment variables to all jobs
 env:
   SOLUTION_ORG: aws-solutions
   SOLUTION_NAME: my-blue-solution
   DIST_OUTPUT_BUCKET: my-dist-output-bucket
   REGION: us-west-2
 
+# Workflow is manually triggered using the UI or API.
 on:
-  repository_dispatch:
-    types: [manual_trigger]
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      x:
+        description: "x parameter"
+        default: "1234"
+        required: true
 
 jobs:
   build-job:
     name: Run build script
     runs-on: ubuntu-latest
     steps:
+      - name: Dump input
+        run: echo "input x value is ${{ github.event.inputs.x }}"
       - name: Check out repo
         uses: actions/checkout@v2
       - name: Set up Push variables
@@ -30,3 +38,4 @@ jobs:
           ls -la
           pwd
           find . -type d \( ! -name .git \) -print
+          env
