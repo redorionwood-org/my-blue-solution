@@ -1,0 +1,32 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+name: Push Workflow
+
+# global environment variables to all jobs
+env:
+  SOLUTION_ORG: aws-solutions
+  SOLUTION_NAME: my-blue-solution
+  DIST_OUTPUT_BUCKET: my-dist-output-bucket
+  REGION: us-west-2
+
+on:
+  repository_dispatch:
+    types: [manual_trigger]
+
+jobs:
+  build-job:
+    name: Run build script
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+      - name: Set up Push variables
+        run: echo "VERSION=`git rev-parse --short HEAD`" >> $GITHUB_ENV
+      - name: Update system path
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Update packages
+        run: |
+          ls -la
+          pwd
+          find . -type d \( ! -name .git \) -print
