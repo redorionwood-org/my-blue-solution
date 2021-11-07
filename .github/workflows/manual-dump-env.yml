@@ -37,5 +37,5 @@ jobs:
         run: |
           ls -la
           pwd
-          find . -type d \( ! -name .git \) -print
+          find . | grep -v .git/
           env
